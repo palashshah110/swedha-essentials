@@ -10,7 +10,7 @@
   
   body {
     font-family: 'Inter', sans-serif;
-    background-color: #FDF6E3;
+    background-color: #fefefe; /* Off-white background */
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -18,6 +18,7 @@
   }
 }
 
+/* Rest of your existing CSS remains the same */
 @layer components {
   .btn-primary {
     @apply bg-primary-gold text-primary-plum px-8 py-4 rounded-full font-semibold text-lg hover:bg-yellow-200 transition-colors shadow-lg;
@@ -34,7 +35,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FDF6E3;
+  background: #fefefe; /* Updated to off-white */
 }
 
 ::-webkit-scrollbar-thumb {

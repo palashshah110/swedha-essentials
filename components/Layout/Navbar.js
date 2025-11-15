@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X, ShoppingBag } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -11,9 +12,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary-gold rounded-full flex items-center justify-center">
-              <span className="text-primary-plum font-serif font-bold text-lg">S</span>
+          <Link href="/" className="flex justify-center items-center space-x-3">
+            <div className="w-12 h-12 relative mt-4">
+              <Image
+                src="/logo.jpeg"
+                alt="Swedha Essentials"
+                width={48}
+                height={48}
+                className="object-cover"
+              />
             </div>
             <div>
               <h1 className="font-serif text-xl font-semibold">Swedha Essentials</h1>

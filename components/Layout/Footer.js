@@ -1,6 +1,7 @@
 // components/Layout/Footer.js
 import Link from 'next/link'
-import { Instagram, Facebook, Mail, MapPin } from 'lucide-react'
+import { Instagram, Facebook, Mail, MapPin, Phone } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
@@ -10,8 +11,14 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-primary-gold rounded-full flex items-center justify-center">
-                <span className="text-primary-plum font-serif font-bold text-lg">S</span>
+              <div className="w-12 h-12 relative mt-4">
+                <Image
+                  src="/logo.jpeg"
+                  alt="Swedha Essentials"
+                  width={48}
+                  height={48}
+                  className="object-cover"
+                />
               </div>
               <div>
                 <h3 className="font-serif text-xl font-semibold">Swedha Essentials</h3>
@@ -22,6 +29,10 @@ export default function Footer() {
               Bringing nature's healing touch into everyday living through pure, herbal, 
               and organic personal care and home fragrance products.
             </p>
+            <p className="text-primary-gold font-semibold mb-4">
+              Contact us for bulk orders, export and white labeling of our products for your brand. 
+              We also ship to different parts of the world and deal B2B.
+            </p>
             <div className="flex space-x-4">
               <a href="#" className="text-white/70 hover:text-primary-gold transition-colors">
                 <Instagram className="w-5 h-5" />
@@ -29,7 +40,7 @@ export default function Footer() {
               <a href="#" className="text-white/70 hover:text-primary-gold transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="text-white/70 hover:text-primary-gold transition-colors">
+              <a href="mailto:contact@swedhaessentials.com" className="text-white/70 hover:text-primary-gold transition-colors">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
@@ -54,9 +65,17 @@ export default function Footer() {
                 <Mail className="w-4 h-4" />
                 <span>contact@swedhaessentials.com</span>
               </a>
+              <a href="tel:+919752709795" className="flex items-center space-x-2 text-white/70 hover:text-primary-gold transition-colors">
+                <Phone className="w-4 h-4" />
+                <span>+91 97527 09795</span>
+              </a>
+              <a href="tel:+918619696860" className="flex items-center space-x-2 text-white/70 hover:text-primary-gold transition-colors">
+                <Phone className="w-4 h-4" />
+                <span>+91 86196 96860</span>
+              </a>
               <div className="flex items-start space-x-2 text-white/70">
                 <MapPin className="w-4 h-4 mt-0.5" />
-                <span>India</span>
+                <span>Plot No. 32, Nimrani, MP</span>
               </div>
             </div>
           </div>

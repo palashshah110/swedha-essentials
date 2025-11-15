@@ -1,8 +1,13 @@
-import type { NextConfig } from "next";
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  },
+  // Add this for static export
+  assetPrefix: process.env.NODE_ENV === 'production' ? '.' : '',
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  
-};
-
-export default nextConfig;
+module.exports = nextConfig

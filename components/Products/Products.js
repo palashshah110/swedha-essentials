@@ -12,7 +12,7 @@ export default function Products() {
         'Car & Air Fresheners – Long-lasting natural fragrances'
       ],
       color: 'from-purple-500 to-pink-500'
-    },
+    },  
     {
       icon: Bath,
       title: 'Bath & Body Care',
