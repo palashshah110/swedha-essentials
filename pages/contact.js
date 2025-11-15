@@ -446,7 +446,6 @@ export default function ContactPage() {
               </h2>
 
               {/* Success Message */}
-           // In the contact form JSX, update the success message:
               {isSubmitted && (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
                   <div className="flex items-center">
