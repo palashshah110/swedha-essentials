@@ -14,21 +14,60 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     })
+    // Clear error when user starts typing
+    if (error) setError('')
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  setIsSubmitting(true)
+  setError('')
+
+  try {
+    const response = await fetch('https://skin-sugar.vercel.app/api/contactUs/sendMail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+        company: 'Swedha Essentials',
+        source: 'Website Contact Form'
+      })
+    })
+
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type')
+    let data
     
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json()
+    } else {
+      // If not JSON, get the text to see what's returned
+      const text = await response.text()
+      console.warn('Non-JSON response:', text)
+      
+      // If it's an HTML error page, treat as server error
+      if (text.includes('<!DOCTYPE') || text.includes('<html')) {
+        throw new Error('Server error. Please try again later.')
+      } else {
+        // If it's some other text, use it as message
+        data = { message: text || 'Email sent successfully' }
+      }
+    }
+
+    if (response.ok) {
       setIsSubmitted(true)
       setFormData({
         name: '',
@@ -37,8 +76,26 @@ export default function ContactPage() {
         subject: '',
         message: ''
       })
-    }, 2000)
+    } else {
+      throw new Error(data.message || `Server error: ${response.status}`)
+    }
+  } catch (err) {
+    console.error('Email sending error:', err)
+    
+    // User-friendly error messages
+    if (err.message.includes('Failed to fetch') || err.message.includes('Network')) {
+      setError('Network error. Please check your connection and try again.')
+    } else if (err.message.includes('404')) {
+      setError('Service temporarily unavailable. Please contact us directly at contact@swedhaessentials.com')
+    } else if (err.message.includes('500')) {
+      setError('Server error. Please try again later or contact us directly.')
+    } else {
+      setError(err.message || 'Something went wrong. Please try again.')
+    }
+  } finally {
+    setIsSubmitting(false)
   }
+}
 
   return (
     <Layout>
@@ -146,11 +203,19 @@ export default function ContactPage() {
                 Send Enquiry
               </h2>
               
-              {isSubmitted ? (
+              {/* Success Message */}
+              {isSubmitted && (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
-                  Thank you for your enquiry! We'll get back to you soon.
+                  <strong>Thank you!</strong> Your enquiry has been sent successfully. We'll get back to you soon.
                 </div>
-              ) : null}
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+                  <strong>Error:</strong> {error}
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
@@ -165,7 +230,8 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors disabled:opacity-50"
                       placeholder="Your full name"
                     />
                   </div>
@@ -180,7 +246,8 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors disabled:opacity-50"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -198,7 +265,8 @@ export default function ContactPage() {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors disabled:opacity-50"
                       placeholder="Your phone number"
                     />
                   </div>
@@ -212,7 +280,8 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors"
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors disabled:opacity-50"
                     >
                       <option value="">Select an option</option>
                       <option value="bulk-order">Bulk Order</option>
@@ -235,8 +304,9 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     required
+                    disabled={isSubmitting}
                     rows="6"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-gold focus:border-transparent transition-colors disabled:opacity-50"
                     placeholder="Tell us about your requirements..."
                   ></textarea>
                 </div>
@@ -244,10 +314,24 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary-gold text-primary-plum px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-200 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-primary-gold text-primary-plum px-8 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-200 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Enquiry'}
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-plum" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Enquiry'
+                  )}
                 </button>
+
+                <p className="text-sm text-gray-600 text-center">
+                  We typically respond within 24 hours
+                </p>
               </form>
             </div>
           </div>
